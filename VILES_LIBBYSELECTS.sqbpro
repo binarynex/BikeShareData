@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/NECPS/ITC6000/Libby Project/VILES_LIBBYDB.db" readonly="0" foreign_keys="0" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="0" synchronous="1"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="125"/><column_width id="3" width="1374"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,6:mainAUTHOR"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="AUTHOR" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="90"/><column index="2" value="129"/><column index="3" value="129"/><column index="4" value="108"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="EDITION" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="52"/><column index="2" value="111"/><column index="3" value="123"/><column index="4" value="148"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">-- SELECTS ALL LIBRARY CARDS WITH A FULL SHELF AND 4 OR 5 HOLDS
+
+SELECT USER.COUNT_HOLDS, USER.COUNT_SHELF, LIBRARY_CARD.CARD_NUM, LIBRARY.LIB_NUM
+FROM USER
+JOIN LIBRARY_CARD ON USER.FK_CAR_NUM = LIBRARY_CARD.CARD_NUM
+JOIN LIBRARY ON LIBRARY_CARD.FK_LIB_NUM = LIBRARY.LIB_NUM
+WHERE USER.COUNT_HOLDS &gt; 3 AND USER.COUNT_SHELF = 5;
+
+
+-- SELECTS AUTHOR ID AND BOOK INFO FOR BOOKS PUBLISHED BY PUBLISHER 1
+SELECT EDITION.EDIT, EDITION.FK_AUTH_ID, EDITION.FK_BOOK_ISBN, BOOK.DEWEY_NUM
+FROM EDITION
+JOIN BOOK ON BOOK.FK_AUTH_ID = EDITION.FK_AUTH_ID
+WHERE EDITION.FK_PUB_ID IS 1;
+
+-- SELECTS LIBRARY CARDS WITH 5 HOLDS FROM LIBRARY 165
+
+SELECT LIBRARY_CARD.FK_USER_ID, USER.COUNT_SHELF, LIBRARY_CARD.CARD_NUM
+FROM LIBRARY_CARD
+JOIN USER ON LIBRARY_CARD.FK_USER_ID = USER.USER_ID
+JOIN LIBRARY ON LIBRARY.LIB_NUM = LIBRARY_CARD.FK_LIB_NUM
+WHERE LIBRARY.LIB_NUM IS 165 AND USER.COUNT_HOLDS IS 5;
+
+-- SELECTS ALL FIRST EDITION COPIES OF BOOKS THAT ARE IN 1 OR 2 CONDITION
+
+SELECT SHELF.DATE_BORROWED, COPY.BOOK_TITLE, BOOK.BOOK_ISBN, SHELF.SHELF_ID, COPY.COPY_CONDITION
+FROM SHELF
+JOIN COPY ON SHELF.BOOK_ISBN = COPY.FK_BOOK_ISBN
+JOIN BOOK ON SHELF.BOOK_ISBN = BOOK.BOOK_ISBN
+WHERE COPY.COPY_CONDITION &lt; 3 AND COPY.COPY_EDITION IS 1;
+
+-- SELECTS BOOK TITLE, CONDITION AND PUBLISHER ID FOR ALL BOOKS BY CAIN CAMERON
+
+SELECT EDITION.FK_BOOK_ISBN, COPY.BOOK_TITLE, COPY.COPY_CONDITION, PUBLISHER.PUB_ID
+FROM EDITION
+JOIN COPY ON EDITION.FK_BOOK_ISBN = COPY.FK_BOOK_ISBN
+JOIN AUTHOR ON AUTHOR.AUTH_ID = EDITION.FK_AUTH_ID
+JOIN PUBLISHER ON PUBLISHER.PUB_ID = EDITION.FK_PUB_ID
+WHERE AUTHOR.AUTH_FNAME IS 'Cain';</sql><current_tab id="0"/></tab_sql></sqlb_project>
